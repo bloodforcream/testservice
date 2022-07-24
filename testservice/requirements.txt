@@ -1,0 +1,7 @@
+Django==4.0.6
+djangorestframework==3.13.1
+psycopg2==2.9.3
+celery==5.2.7
+redis==4.3.4
+pandas==1.4.3
+numpy==1.23.1
