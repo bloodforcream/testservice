@@ -9,31 +9,33 @@ from web.models import Task
 
 logger = logging.getLogger(__name__)
 
+DEFAULT_CHUNK_SIZE = 50 * 1024  # MegaBytes
+
 
 @app.task
 def parse_csv_file(task_id):
     task = Task.objects.get(id=task_id)
     task.status = Task.IN_PROGRESS
     task.started_at = datetime.now()
-    task.save()
-    logger.debug(f'Start processing task {task_id}')
+    task.save(update_fields=['status', 'started_at'])
+    logger.info(f'Start processing task {task_id}')
 
     result = {}
-    with pd.read_csv(f'{settings.CSV_FILES_FOLDER}{task.csv_file_name}', chunksize=50000, quoting=3) as reader:
-        logger.debug(f'Successfully opened {task.csv_file_name} for task {task_id}')
+    path = f'{settings.CSV_FILES_FOLDER}{task.csv_file_name}'
+    with pd.read_csv(path, chunksize=DEFAULT_CHUNK_SIZE, quoting=3) as reader:
+        logger.info(f'Successfully opened {task.csv_file_name} for task {task_id}')
         for chunk in reader:
             chunk = chunk.replace('"', '', regex=True)
             chunk.columns = chunk.columns.str.replace('"', '')
             chunk = chunk[chunk.columns[::10][1:]]
             for column in chunk:
                 total_value_column = pd.to_numeric(chunk[column]).sum()
-                if not result.get(column):
-                    result[column] = total_value_column
-                else:
-                    result[column] += total_value_column
+
+                existing_value = result.get(column, 0)
+                result[column] = existing_value + total_value_column
 
     task.finished_at = datetime.now()
     task.status = Task.DONE
     task.result = result
-    task.save()
-    logger.debug(f'Task {task_id} complete')
+    task.save(update_fields=['status', 'finished_at', 'result'])
+    logger.info(f'Task {task_id} complete')

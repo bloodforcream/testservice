@@ -3,7 +3,7 @@
 Создать .env file
 
 POSTGRES_USER={}
-POSTGRTES_PASSWORD={}
+POSTGRES_PASSWORD={}
 POSTGRES_DATABASE={}
 ```
 ```
@@ -15,14 +15,14 @@ docker exec -it {container_id} python manage.py createsuperuser
 ```
 ## Основные методы
 
-### GET tasks/
-    Получение списка тасок в работе
+### GET /tasks/
+    Получение списка задач в работе
 
-### POST tasks/
-    Создание новой таски
+### POST /tasks/
+    Создание новой задачи
     {
         "csv_file_name": "three_mil_rows.csv"
     }
 
-### GET tasks/{id}/
-    Получение результата работы таски
+### GET /tasks/{id}/
+    Получение результата работы задачи

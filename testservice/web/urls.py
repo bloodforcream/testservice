@@ -1,8 +1,11 @@
-from django.urls import path
+from django.urls import include, path
+from rest_framework.routers import DefaultRouter
 
 from web.views import TaskApiView
 
+router = DefaultRouter()
+router.register('tasks', TaskApiView, basename='tasks')
+
 urlpatterns = [
-    path('tasks/', TaskApiView.as_view({'get': 'list', 'post': 'create'}), name='task-list-create'),
-    path('tasks/<int:pk>/', TaskApiView.as_view({'get': 'retrieve'}), name='task-retrieve'),
+    path('', include(router.urls))
 ]

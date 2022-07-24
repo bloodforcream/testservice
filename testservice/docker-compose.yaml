@@ -16,7 +16,7 @@ services:
       - db
       - redis
     env_file:
-      - ./.env
+      - .env
     depends_on:
       - db
       - redis
@@ -30,7 +30,7 @@ services:
       - 5432
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRTES_PASSWORD}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DATABASE}
 
   redis:
@@ -46,7 +46,7 @@ services:
     volumes:
       - ./:/src
     env_file:
-      - ./.env
+      - .env
     depends_on:
       - db
       - redis
